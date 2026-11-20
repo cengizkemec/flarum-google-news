@@ -6,7 +6,7 @@ const t = (key: string): string => app.translator.trans(`cengizkemec-google-news
 
 export type SettingDefinition = {
   priority: number;
-  config: Record<string, unknown>;
+  build: () => Record<string, unknown>;
 };
 
 export type SectionDefinition = {
@@ -25,34 +25,34 @@ export const sections: SectionDefinition[] = [
 
 const bool = (key: string, priority: number, label: string, help: string): SettingDefinition => ({
   priority,
-  config: {
+  build: () => ({
     setting: PREFIX + key,
     type: 'boolean',
     label: t(label),
     help: t(help),
-  },
+  }),
 });
 
 const text = (key: string, priority: number, label: string, help: string, type = 'text'): SettingDefinition => ({
   priority,
-  config: {
+  build: () => ({
     setting: PREFIX + key,
     type,
     label: t(label),
     help: t(help),
-  },
+  }),
 });
 
 const number = (key: string, priority: number, label: string, help: string, min?: number, max?: number): SettingDefinition => ({
   priority,
-  config: {
+  build: () => ({
     setting: PREFIX + key,
     type: 'number',
     min,
     max,
     label: t(label),
     help: t(help),
-  },
+  }),
 });
 
 export const settings: SettingDefinition[] = [
@@ -64,16 +64,16 @@ export const settings: SettingDefinition[] = [
   text('publisher_country', 940, 'settings.publisher_country_label', 'settings.publisher_country_help'),
   {
     priority: 930,
-    config: {
+    build: () => ({
       setting: PREFIX + 'publisher_logo',
       type: 'image-upload',
-      name: 'google_news_logo',
+      name: 'google-news-logo',
       routePath: 'google-news/logo',
       value: () => app.data.settings[PREFIX + 'publisher_logo'],
       url: () => app.forum.attribute('googleNewsPublisherLogoUrl'),
       label: t('settings.publisher_logo_label'),
       help: t('settings.publisher_logo_help'),
-    },
+    }),
   },
   text('publisher_logo_url', 920, 'settings.publisher_logo_url_label', 'settings.publisher_logo_url_help', 'url'),
   text('default_author', 910, 'settings.default_author_label', 'settings.default_author_help'),
@@ -102,7 +102,7 @@ export const settings: SettingDefinition[] = [
   bool('seo.open_graph', 190, 'settings.open_graph_label', 'settings.open_graph_help'),
   {
     priority: 185,
-    config: {
+    build: () => ({
       setting: PREFIX + 'seo.open_graph_type',
       type: 'select',
       default: 'article',
@@ -112,14 +112,14 @@ export const settings: SettingDefinition[] = [
       },
       label: t('settings.open_graph_type_label'),
       help: t('settings.open_graph_type_help'),
-    },
+    }),
   },
   bool('seo.twitter', 180, 'settings.twitter_label', 'settings.twitter_help'),
   bool('seo.canonical', 170, 'settings.canonical_label', 'settings.canonical_help'),
   bool('seo.description', 160, 'settings.description_label', 'settings.description_help'),
   {
     priority: 150,
-    config: {
+    build: () => ({
       setting: PREFIX + 'seo.robots',
       type: 'select',
       default: 'index,follow',
@@ -131,7 +131,7 @@ export const settings: SettingDefinition[] = [
       },
       label: t('settings.robots_label'),
       help: t('settings.robots_help'),
-    },
+    }),
   },
 
   bool('defaults.is_news', 90, 'settings.defaults_is_news_label', 'settings.defaults_is_news_help'),

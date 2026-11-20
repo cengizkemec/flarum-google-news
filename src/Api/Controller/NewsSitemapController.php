@@ -57,7 +57,6 @@ class NewsSitemapController implements RequestHandlerInterface
     {
         $response = new TextResponse($payload['content'], 200, [
             'Content-Type' => 'application/xml; charset=UTF-8',
-            'X-Content-Type-Options' => 'nosniff',
         ]);
 
         if (isset($payload['ttl'])) {

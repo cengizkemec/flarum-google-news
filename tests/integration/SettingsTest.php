@@ -30,6 +30,19 @@ class SettingsTest extends GoogleNewsTestCase
     }
 
     #[Test]
+    public function empty_checkbox_values_saved_by_the_admin_panel_disable_endpoints(): void
+    {
+        // Flarum saves an unchecked checkbox as an empty string.
+        $this->setting('cengizkemec-google-news.feeds.atom_enabled', '');
+        $this->setting('cengizkemec-google-news.sitemap.enabled', '');
+        $this->seedArticle();
+
+        $this->assertEquals(404, $this->send($this->request('GET', '/news-atom.xml'))->getStatusCode());
+        $this->assertEquals(404, $this->send($this->request('GET', '/news-sitemap.xml'))->getStatusCode());
+        $this->assertEquals(200, $this->send($this->request('GET', '/news-feed.xml'))->getStatusCode());
+    }
+
+    #[Test]
     public function robots_metadata_is_configurable(): void
     {
         $this->withBlog();

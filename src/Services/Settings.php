@@ -35,7 +35,9 @@ class Settings
 
     public function bool(string $key, bool $default = false): bool
     {
-        $value = $this->get($key);
+        // Flarum stores an unchecked checkbox as an empty string, not as
+        // null. Only a missing setting may fall back to the default value.
+        $value = $this->settings->get(self::PREFIX.$key);
 
         if ($value === null) {
             return $default;

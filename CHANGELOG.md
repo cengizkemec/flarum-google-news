@@ -4,6 +4,30 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-11-20
+
+### Fixed
+
+- Boolean settings turned off in the admin panel are now read as `false`.
+  Flarum stores an unchecked checkbox as an empty string, which was
+  incorrectly treated as "not configured" and fell back to the enabled
+  default.
+- The Google News administration page now builds its settings lazily, so
+  opening the page no longer crashes the Flarum admin bundle.
+- The system status panel now keeps its loaded state when Flarum re-renders
+  the extension page, instead of falling back to "Loading status…".
+- Publisher logo uploads now use the field name expected by the Flarum image
+  upload controller, so the ACP upload button works correctly.
+- Removed a duplicate `X-Content-Type-Options` response header from sitemap
+  and feed endpoints; Flarum already adds it globally.
+
+### Verified
+
+- Full manual verification in a local Flarum 2.0.2 installation with SQLite,
+  FoF Blog 2.0.0-beta.5 and FoF SEO 4.0.0-beta.16: ACP settings, logo upload,
+  cache clearing, per-article settings, JSON-LD, canonical/Open Graph/Twitter
+  metadata, Google News sitemap, content sitemap, RSS and Atom feeds.
+
 ## [1.0.0] - 2026-11-20
 
 ### Added
@@ -30,4 +54,5 @@ All notable changes to this project are documented here. The format follows
 - PHPUnit unit and Flarum integration tests.
 - MIT license and open-source project documentation.
 
+[1.0.1]: https://github.com/cengizkemec/flarum-google-news/releases/tag/v1.0.1
 [1.0.0]: https://github.com/cengizkemec/flarum-google-news/releases/tag/v1.0.0

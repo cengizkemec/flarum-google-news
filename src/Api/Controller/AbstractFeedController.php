@@ -41,7 +41,6 @@ abstract class AbstractFeedController extends NewsSitemapController
     {
         $response = new TextResponse($payload['content'], 200, [
             'Content-Type' => $contentType,
-            'X-Content-Type-Options' => 'nosniff',
         ]);
 
         if (isset($payload['ttl'])) {

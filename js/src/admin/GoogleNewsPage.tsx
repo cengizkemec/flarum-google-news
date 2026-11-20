@@ -40,13 +40,19 @@ interface StatusResponse {
   resources: Record<string, string>;
 }
 
-export default class GoogleNewsPage extends ExtensionPage {
-  status: StatusResponse | null = null;
-  statusLoading = false;
-  statusError = false;
+const pageState: {
+  status: StatusResponse | null;
+  loading: boolean;
+  error: boolean;
+} = {
+  status: null,
+  loading: false,
+  error: false,
+};
 
-  oninit(vnode: Mithril.Vnode<any, this>) {
-    super.oninit(vnode);
+export default class GoogleNewsPage extends ExtensionPage {
+  oncreate(vnode: Mithril.VnodeDOM<any, this>) {
+    super.oncreate(vnode);
     this.loadStatus();
   }
 
@@ -64,8 +70,8 @@ export default class GoogleNewsPage extends ExtensionPage {
   }
 
   loadStatus() {
-    this.statusLoading = true;
-    this.statusError = false;
+    pageState.loading = true;
+    pageState.error = false;
 
     app
       .request({
@@ -73,13 +79,13 @@ export default class GoogleNewsPage extends ExtensionPage {
         url: app.forum.attribute('apiUrl') + '/google-news/status',
       })
       .then((response) => {
-        this.status = response as StatusResponse;
+        pageState.status = response as StatusResponse;
       })
       .catch(() => {
-        this.statusError = true;
+        pageState.error = true;
       })
       .finally(() => {
-        this.statusLoading = false;
+        pageState.loading = false;
         m.redraw();
       });
   }
@@ -97,7 +103,7 @@ export default class GoogleNewsPage extends ExtensionPage {
   }
 
   statusSection(): JSX.Element {
-    if (this.statusLoading && this.status === null) {
+    if (pageState.loading && pageState.status === null) {
       return (
         <div className="container GoogleNewsPage-status">
           <h2 className="GoogleNewsSectionTitle">{t('status.heading')}</h2>
@@ -106,7 +112,7 @@ export default class GoogleNewsPage extends ExtensionPage {
       );
     }
 
-    if (this.statusError || this.status === null) {
+    if (pageState.error || pageState.status === null) {
       return (
         <div className="container GoogleNewsPage-status">
           <h2 className="GoogleNewsSectionTitle">{t('status.heading')}</h2>
@@ -118,7 +124,7 @@ export default class GoogleNewsPage extends ExtensionPage {
       );
     }
 
-    const status = this.status;
+    const status = pageState.status;
     const cacheRows = Object.entries(status.cache.entries);
 
     return (
@@ -126,7 +132,7 @@ export default class GoogleNewsPage extends ExtensionPage {
         <div className="GoogleNewsSectionHeader">
           <h2 className="GoogleNewsSectionTitle">{t('status.heading')}</h2>
           <div className="GoogleNewsSectionActions">
-            <Button className="Button" icon="fas fa-sync" onclick={() => this.loadStatus()} loading={this.statusLoading}>
+            <Button className="Button" icon="fas fa-sync" onclick={() => this.loadStatus()} loading={pageState.loading}>
               {t('status.refresh')}
             </Button>
             <Button className="Button Button--danger" icon="fas fa-trash-alt" onclick={() => this.clearCache()}>

@@ -13,7 +13,7 @@ for (const section of sections) {
 }
 
 for (const definition of settings) {
-  admin.setting(() => definition.config as any, definition.priority);
+  admin.setting(() => definition.build() as any, definition.priority);
 }
 
 admin
